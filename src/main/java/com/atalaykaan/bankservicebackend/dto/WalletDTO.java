@@ -1,9 +1,7 @@
 package com.atalaykaan.bankservicebackend.dto;
 
+import com.atalaykaan.bankservicebackend.model.enums.Currency;
 import lombok.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Getter
@@ -13,13 +11,13 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class AccountDTO {
+public class WalletDTO {
 
     private Long id;
 
-    private UserDTO userDTO;
+    private Double balance;
 
-    private List<WalletDTO> walletDTOs;
+    private Currency currency;
 
-    private LocalDateTime createdAt;
+    private AccountDTO accountDTO;
 }

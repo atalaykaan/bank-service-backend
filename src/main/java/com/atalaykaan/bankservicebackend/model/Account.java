@@ -1,13 +1,10 @@
 package com.atalaykaan.bankservicebackend.model;
 
-import com.atalaykaan.bankservicebackend.model.enums.Currency;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -24,9 +21,13 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double balance;
+    @OneToOne(mappedBy = "account", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private User user;
 
-    private Currency currency;
+    @OneToMany(mappedBy = "account",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private List<Wallet> wallets;
 
     private LocalDateTime createdAt;
 }
