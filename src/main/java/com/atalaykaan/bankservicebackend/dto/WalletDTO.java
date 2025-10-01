@@ -19,5 +19,5 @@ public class WalletDTO {
 
     private Currency currency;
 
-    private AccountDTO accountDTO;
+    private Long accountDtoId;
 }

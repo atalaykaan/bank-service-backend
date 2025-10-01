@@ -14,6 +14,10 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode
 @ToString
+@Table(name = "wallets",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"account_id", "currency"}
+        ))
 public class Wallet {
 
     @Id
@@ -26,7 +30,7 @@ public class Wallet {
     @NotNull
     private Currency currency;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 }

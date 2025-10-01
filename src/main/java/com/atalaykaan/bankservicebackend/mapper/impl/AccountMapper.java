@@ -3,23 +3,29 @@ package com.atalaykaan.bankservicebackend.mapper.impl;
 import com.atalaykaan.bankservicebackend.dto.AccountDTO;
 import com.atalaykaan.bankservicebackend.mapper.Mapper;
 import com.atalaykaan.bankservicebackend.model.Account;
+import com.atalaykaan.bankservicebackend.model.User;
+import com.atalaykaan.bankservicebackend.model.Wallet;
+import com.atalaykaan.bankservicebackend.service.UserService;
+import com.atalaykaan.bankservicebackend.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class AccountMapper implements Mapper<Account, AccountDTO> {
 
-    private final UserMapper userMapper;
+    private final UserService userService;
 
-    private final WalletMapper walletMapper;
+    private final WalletService walletService;
 
     public Account fromDTO(AccountDTO accountDTO) {
 
         return Account.builder()
                 .id(accountDTO.getId())
-                .user(userMapper.fromDTO(accountDTO.getUserDTO()))
-                .wallets(accountDTO.getWalletDTOs().stream().map(walletMapper::fromDTO).toList())
+                .user(userService.findUserById(accountDTO.getUserDtoId()))
+                .wallets(accountDTO.getWalletIdList().stream().map(walletService::findWalletById).toList())
                 .createdAt(accountDTO.getCreatedAt())
                 .build();
     }
@@ -28,8 +34,10 @@ public class AccountMapper implements Mapper<Account, AccountDTO> {
 
         return AccountDTO.builder()
                 .id(account.getId())
-                .userDTO(userMapper.toDTO(account.getUser()))
-                .walletDTOs(account.getWallets().stream().map(walletMapper::toDTO).toList())
+                .userDtoId(Optional.ofNullable(account.getUser()).map(User::getId).orElse(null))
+                .walletIdList(Optional.ofNullable(account.getWallets())
+                        .map(wallets -> wallets.stream().map(Wallet::getId).toList())
+                        .orElse(null))
                 .createdAt(account.getCreatedAt())
                 .build();
     }

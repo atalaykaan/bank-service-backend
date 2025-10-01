@@ -2,15 +2,19 @@ package com.atalaykaan.bankservicebackend.mapper.impl;
 
 import com.atalaykaan.bankservicebackend.dto.UserDTO;
 import com.atalaykaan.bankservicebackend.mapper.Mapper;
+import com.atalaykaan.bankservicebackend.model.Account;
 import com.atalaykaan.bankservicebackend.model.User;
+import com.atalaykaan.bankservicebackend.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class UserMapper implements Mapper<User, UserDTO> {
 
-    private final AccountMapper accountMapper;
+    private final AccountService accountService;
 
     public User fromDTO(UserDTO userDTO) {
 
@@ -18,7 +22,7 @@ public class UserMapper implements Mapper<User, UserDTO> {
                 .id(userDTO.getId())
                 .name(userDTO.getName())
                 .email(userDTO.getEmail())
-                .account(accountMapper.fromDTO(userDTO.getAccountDTO()))
+                .account(accountService.findAccountById(userDTO.getAccountDtoId()))
                 .birthDate(userDTO.getBirthDate())
                 .build();
 
@@ -30,7 +34,9 @@ public class UserMapper implements Mapper<User, UserDTO> {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
-                .accountDTO(accountMapper.toDTO(user.getAccount()))
+                .accountDtoId(Optional.ofNullable(user.getAccount())
+                        .map(Account::getId)
+                        .orElse(null))
                 .birthDate(user.getBirthDate())
                 .build();
     }

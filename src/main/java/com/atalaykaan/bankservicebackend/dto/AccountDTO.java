@@ -17,9 +17,9 @@ public class AccountDTO {
 
     private Long id;
 
-    private UserDTO userDTO;
+    private Long userDtoId;
 
-    private List<WalletDTO> walletDTOs;
+    private List<Long> walletIdList;
 
     private LocalDateTime createdAt;
 }

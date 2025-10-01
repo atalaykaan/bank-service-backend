@@ -20,7 +20,7 @@ public class UserDTO {
 
     private String email;
 
-    private AccountDTO accountDTO;
+    private Long accountDtoId;
 
     private LocalDate birthDate;
 }

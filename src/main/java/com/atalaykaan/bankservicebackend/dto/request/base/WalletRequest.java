@@ -13,6 +13,7 @@ public class WalletRequest {
 
     private Long id;
 
+    @NotNull
     private Double balance;
 
     @NotNull

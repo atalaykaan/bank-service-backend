@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,6 +16,7 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode
 @ToString
+@Table(name = "accounts")
 public class Account {
 
     @Id
@@ -25,9 +27,10 @@ public class Account {
     private User user;
 
     @OneToMany(mappedBy = "account",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private List<Wallet> wallets;
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Wallet> wallets = new ArrayList<>();
 
     private LocalDateTime createdAt;
 }
