@@ -1,6 +1,6 @@
 package com.atalaykaan.bankservicebackend.controller;
 
-import com.atalaykaan.bankservicebackend.dto.WalletDTO;
+import com.atalaykaan.bankservicebackend.dto.response.WalletDTO;
 import com.atalaykaan.bankservicebackend.dto.request.create.CreateWalletRequest;
 import com.atalaykaan.bankservicebackend.dto.request.update.UpdateWalletRequest;
 import com.atalaykaan.bankservicebackend.mapper.impl.WalletMapper;
@@ -28,7 +28,6 @@ public class WalletController {
         List<WalletDTO> walletDTOs = walletService
                 .findAllWallets()
                 .stream()
-                .map(walletMapper::toDTO)
                 .toList();
 
         return ResponseEntity.ok(walletDTOs);
@@ -37,7 +36,7 @@ public class WalletController {
     @GetMapping("/wallets/{id}")
     public ResponseEntity<WalletDTO> getWalletById(@PathVariable Long id) {
 
-        WalletDTO walletDTO = walletMapper.toDTO(walletService.findWalletById(id));
+        WalletDTO walletDTO = walletService.findWalletDtoById(id);
 
         return ResponseEntity.ok(walletDTO);
     }
@@ -45,7 +44,7 @@ public class WalletController {
     @PostMapping("/wallets")
     public ResponseEntity<WalletDTO> createWallet(@Valid @RequestBody CreateWalletRequest createWalletRequest) {
 
-        WalletDTO walletDTO = walletMapper.toDTO(walletService.createWallet(createWalletRequest));
+        WalletDTO walletDTO = walletService.createWallet(createWalletRequest);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -59,7 +58,7 @@ public class WalletController {
     @PutMapping("/wallets/{id}")
     public ResponseEntity<WalletDTO> updateWallet(@PathVariable Long id, @Valid @RequestBody UpdateWalletRequest updateWalletRequest) {
 
-        WalletDTO walletDTO = walletMapper.toDTO(walletService.updateWallet(id, updateWalletRequest));
+        WalletDTO walletDTO = walletService.updateWallet(id, updateWalletRequest);
 
         return ResponseEntity.ok(walletDTO);
     }

@@ -1,6 +1,6 @@
 package com.atalaykaan.bankservicebackend.mapper.impl;
 
-import com.atalaykaan.bankservicebackend.dto.AccountDTO;
+import com.atalaykaan.bankservicebackend.dto.response.AccountDTO;
 import com.atalaykaan.bankservicebackend.mapper.Mapper;
 import com.atalaykaan.bankservicebackend.model.Account;
 import com.atalaykaan.bankservicebackend.model.User;
@@ -16,16 +16,23 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountMapper implements Mapper<Account, AccountDTO> {
 
-    private final UserService userService;
-
-    private final WalletService walletService;
+//    private final UserService userService;
+//
+//    private final WalletService walletService;
+//
+//    private final UserMapper userMapper;
+//
+//    private final WalletMapper walletMapper;
 
     public Account fromDTO(AccountDTO accountDTO) {
 
         return Account.builder()
                 .id(accountDTO.getId())
-                .user(userService.findUserById(accountDTO.getUserDtoId()))
-                .wallets(accountDTO.getWalletIdList().stream().map(walletService::findWalletById).toList())
+//                .user(userMapper.fromDTO(userService.findUserDtoById(accountDTO.getUserDtoId())))
+//                .wallets(accountDTO.getWalletIdList()
+//                        .stream()
+//                        .map(walletId -> walletMapper.fromDTO(walletService.findWalletDtoById(walletId)))
+//                        .toList())
                 .createdAt(accountDTO.getCreatedAt())
                 .build();
     }

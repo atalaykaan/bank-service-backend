@@ -1,9 +1,12 @@
 package com.atalaykaan.bankservicebackend.service;
 
+import com.atalaykaan.bankservicebackend.dto.response.AccountDTO;
+import com.atalaykaan.bankservicebackend.dto.response.UserDTO;
 import com.atalaykaan.bankservicebackend.dto.request.create.CreateAccountRequest;
 import com.atalaykaan.bankservicebackend.dto.request.update.UpdateAccountRequest;
-import com.atalaykaan.bankservicebackend.dto.request.update.UpdateUserRequest;
 import com.atalaykaan.bankservicebackend.exception.AccountNotFoundException;
+import com.atalaykaan.bankservicebackend.exception.UserWithAccountExistsException;
+import com.atalaykaan.bankservicebackend.mapper.impl.AccountMapper;
 import com.atalaykaan.bankservicebackend.model.Account;
 import com.atalaykaan.bankservicebackend.model.User;
 import com.atalaykaan.bankservicebackend.repository.AccountRepository;
@@ -23,44 +26,56 @@ public class AccountService {
 
     private final UserService userService;
 
-    public List<Account> findAllAccounts() {
+    private final AccountMapper accountMapper;
+
+    public List<AccountDTO> findAllAccounts() {
 
         return Optional.of(accountRepository.findAll())
                 .filter(list -> !list.isEmpty())
+                .map(accounts -> accounts.stream().map(accountMapper::toDTO).toList())
                 .orElseThrow(() -> new AccountNotFoundException("No accounts were found"));
     }
 
-    public Account findAccountById(Long id) {
+    public AccountDTO findAccountDtoById(Long id) {
 
         return accountRepository.findById(id)
+                .map(accountMapper::toDTO)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + id));
     }
 
     @Transactional
-    public Account createAccount(CreateAccountRequest createAccountRequest) {
+    public AccountDTO createAccount(CreateAccountRequest createAccountRequest) {
 
         User foundUser = userService.findUserById(createAccountRequest.getUserId());
+
+        if(foundUser.getAccount() != null) {
+
+            throw new UserWithAccountExistsException("This user already has an account");
+        }
 
         Account account = Account.builder()
                 .user(foundUser)
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        foundUser.setAccount(account);
+        userService.addAccountToUser(account, foundUser);
 
-        return accountRepository.save(account);
+        return accountMapper.toDTO(accountRepository.save(account));
     }
 
     @Transactional
-    public Account updateAccount(Long id, UpdateAccountRequest updateAccountRequest) {
+    public AccountDTO updateAccount(Long id, UpdateAccountRequest updateAccountRequest) {
 
-        Account account = findAccountById(id);
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + id));
 
         User user = userService.findUserById(updateAccountRequest.getUserId());
 
         account.setUser(user);
 
-        return accountRepository.save(account);
+        userService.addAccountToUser(account, user);
+
+        return accountMapper.toDTO(accountRepository.save(account));
     }
 
 //    @Transactional
@@ -85,7 +100,10 @@ public class AccountService {
     @Transactional
     public void deleteAccount(Long id) {
 
-        findAccountById(id);
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + id));
+
+        account.setUser(null);
 
         accountRepository.deleteById(id);
     }
@@ -93,8 +111,20 @@ public class AccountService {
     @Transactional
     public void deleteAllAccounts() {
 
-        findAllAccounts();
+        if(accountRepository.findAll().isEmpty()) {
+
+            throw new AccountNotFoundException("No accounts were found");
+        }
+
+        accountRepository.findAll()
+                .forEach(account -> account.getUser().setAccount(null));
 
         accountRepository.deleteAll();
+    }
+
+    protected Account findAccountById(Long id) {
+
+        return accountRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + id));
     }
 }

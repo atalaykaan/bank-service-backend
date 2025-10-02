@@ -1,4 +1,4 @@
-package com.atalaykaan.bankservicebackend.dto;
+package com.atalaykaan.bankservicebackend.dto.response;
 
 public enum CurrencyDTO {
 

@@ -1,6 +1,6 @@
 package com.atalaykaan.bankservicebackend.mapper.impl;
 
-import com.atalaykaan.bankservicebackend.dto.UserDTO;
+import com.atalaykaan.bankservicebackend.dto.response.UserDTO;
 import com.atalaykaan.bankservicebackend.mapper.Mapper;
 import com.atalaykaan.bankservicebackend.model.Account;
 import com.atalaykaan.bankservicebackend.model.User;
@@ -14,7 +14,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserMapper implements Mapper<User, UserDTO> {
 
-    private final AccountService accountService;
+//    private final AccountService accountService;
+//
+//    private final AccountMapper accountMapper;
 
     public User fromDTO(UserDTO userDTO) {
 
@@ -22,7 +24,7 @@ public class UserMapper implements Mapper<User, UserDTO> {
                 .id(userDTO.getId())
                 .name(userDTO.getName())
                 .email(userDTO.getEmail())
-                .account(accountService.findAccountById(userDTO.getAccountDtoId()))
+//                .account(accountMapper.fromDTO(accountService.findAccountDtoById(userDTO.getAccountDtoId())))
                 .birthDate(userDTO.getBirthDate())
                 .build();
 

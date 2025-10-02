@@ -31,7 +31,7 @@ public class User {
     @Email
     private String email;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "account_id")
     private Account account;
 

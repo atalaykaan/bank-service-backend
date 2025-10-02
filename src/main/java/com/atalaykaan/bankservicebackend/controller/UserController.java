@@ -1,6 +1,6 @@
 package com.atalaykaan.bankservicebackend.controller;
 
-import com.atalaykaan.bankservicebackend.dto.UserDTO;
+import com.atalaykaan.bankservicebackend.dto.response.UserDTO;
 import com.atalaykaan.bankservicebackend.dto.request.create.CreateUserRequest;
 import com.atalaykaan.bankservicebackend.dto.request.update.UpdateUserRequest;
 import com.atalaykaan.bankservicebackend.mapper.impl.UserMapper;
@@ -20,15 +20,12 @@ public class UserController {
 
     private final UserService userService;
 
-    private final UserMapper userMapper;
-
     @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
 
         List<UserDTO> userDTOs = userService
                 .findAllUsers()
                 .stream()
-                .map(userMapper::toDTO)
                 .toList();
 
         return ResponseEntity.ok(userDTOs);
@@ -37,7 +34,7 @@ public class UserController {
     @GetMapping("/users/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
 
-        UserDTO userDTO = userMapper.toDTO(userService.findUserById(id));
+        UserDTO userDTO = userService.findUserDtoById(id);
 
         return ResponseEntity.ok(userDTO);
     }
@@ -45,7 +42,7 @@ public class UserController {
     @PostMapping("/users")
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
 
-        UserDTO userDTO = userMapper.toDTO(userService.createUser(createUserRequest));
+        UserDTO userDTO = userService.createUser(createUserRequest);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -59,7 +56,7 @@ public class UserController {
     @PutMapping("/users/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest updateUserRequest) {
 
-        UserDTO userDTO = userMapper.toDTO(userService.updateUser(id, updateUserRequest));
+        UserDTO userDTO = userService.updateUser(id, updateUserRequest);
 
         return ResponseEntity.ok(userDTO);
     }

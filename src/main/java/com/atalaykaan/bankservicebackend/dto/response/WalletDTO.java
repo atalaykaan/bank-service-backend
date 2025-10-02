@@ -1,4 +1,4 @@
-package com.atalaykaan.bankservicebackend.dto;
+package com.atalaykaan.bankservicebackend.dto.response;
 
 import com.atalaykaan.bankservicebackend.model.enums.Currency;
 import lombok.*;

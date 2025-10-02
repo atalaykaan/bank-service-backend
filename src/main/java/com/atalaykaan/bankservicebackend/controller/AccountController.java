@@ -1,6 +1,6 @@
 package com.atalaykaan.bankservicebackend.controller;
 
-import com.atalaykaan.bankservicebackend.dto.AccountDTO;
+import com.atalaykaan.bankservicebackend.dto.response.AccountDTO;
 import com.atalaykaan.bankservicebackend.dto.request.create.CreateAccountRequest;
 import com.atalaykaan.bankservicebackend.dto.request.update.UpdateAccountRequest;
 import com.atalaykaan.bankservicebackend.mapper.impl.AccountMapper;
@@ -28,7 +28,6 @@ public class AccountController {
         List<AccountDTO> accountDTOs = accountService
                 .findAllAccounts()
                 .stream()
-                .map(accountMapper::toDTO)
                 .toList();
 
         return ResponseEntity.ok(accountDTOs);
@@ -37,7 +36,7 @@ public class AccountController {
     @GetMapping("/accounts/{id}")
     public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long id) {
 
-        AccountDTO accountDTO = accountMapper.toDTO(accountService.findAccountById(id));
+        AccountDTO accountDTO = accountService.findAccountDtoById(id);
 
         return ResponseEntity.ok(accountDTO);
     }
@@ -45,7 +44,7 @@ public class AccountController {
     @PostMapping("/accounts")
     public ResponseEntity<AccountDTO> createAccount(@Valid @RequestBody CreateAccountRequest createAccountRequest) {
 
-        AccountDTO accountDTO = accountMapper.toDTO(accountService.createAccount(createAccountRequest));
+        AccountDTO accountDTO = accountService.createAccount(createAccountRequest);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -59,7 +58,7 @@ public class AccountController {
     @PutMapping("/accounts/{id}")
     public ResponseEntity<AccountDTO> updateAccount(@PathVariable Long id, @Valid @RequestBody UpdateAccountRequest updateAccountRequest) {
 
-        AccountDTO accountDTO = accountMapper.toDTO(accountService.updateAccount(id, updateAccountRequest));
+        AccountDTO accountDTO = accountService.updateAccount(id, updateAccountRequest);
 
         return ResponseEntity.ok(accountDTO);
     }

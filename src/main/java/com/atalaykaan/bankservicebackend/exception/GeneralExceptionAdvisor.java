@@ -48,4 +48,44 @@ public class GeneralExceptionAdvisor extends ResponseEntityExceptionHandler {
                 HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) throws Exception {
+
+        return new ResponseEntity<Object>(List.of(ex.getMessage(),
+                request.getDescription(false)),
+                HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(WalletNotFoundException.class)
+    public ResponseEntity<Object> handleWalletNotFoundException(WalletNotFoundException ex, WebRequest request) throws Exception {
+
+        return new ResponseEntity<Object>(List.of(ex.getMessage(),
+                request.getDescription(false)),
+                HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<Object> handleInsufficientFundsException(InsufficientFundsException ex, WebRequest request) throws Exception {
+
+        return new ResponseEntity<Object>(List.of(ex.getMessage(),
+                request.getDescription(false)),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(WalletWithCurrencyAlreadyExistsException.class)
+    public ResponseEntity<Object> handleWalletWithCurrencyAlreadyExistsException(WalletWithCurrencyAlreadyExistsException ex, WebRequest request) throws Exception {
+
+        return new ResponseEntity<Object>(List.of(ex.getMessage(),
+                request.getDescription(false)),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserWithAccountExistsException.class)
+    public ResponseEntity<Object> handleUserWithAccountExistsException(UserWithAccountExistsException ex, WebRequest request) throws Exception {
+
+        return new ResponseEntity<Object>(List.of(ex.getMessage(),
+                request.getDescription(false)),
+                HttpStatus.BAD_REQUEST);
+    }
+
 }

@@ -23,12 +23,11 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "account", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne(mappedBy = "account")
     private User user;
 
     @OneToMany(mappedBy = "account",
             fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<Wallet> wallets = new ArrayList<>();
 
