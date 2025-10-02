@@ -103,7 +103,7 @@ public class AccountService {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + id));
 
-        account.setUser(null);
+        account.getUser().setAccount(null);
 
         accountRepository.deleteById(id);
     }
