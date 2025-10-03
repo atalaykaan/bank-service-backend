@@ -2,7 +2,6 @@ package com.atalaykaan.bankservicebackend.model;
 
 import com.atalaykaan.bankservicebackend.model.enums.Currency;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
@@ -27,7 +26,6 @@ public class Wallet {
     private Double balance;
 
     @Enumerated
-    @NotNull
     private Currency currency;
 
     @ManyToOne(fetch = FetchType.EAGER)

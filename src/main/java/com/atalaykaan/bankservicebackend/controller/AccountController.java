@@ -3,7 +3,6 @@ package com.atalaykaan.bankservicebackend.controller;
 import com.atalaykaan.bankservicebackend.dto.response.AccountDTO;
 import com.atalaykaan.bankservicebackend.dto.request.create.CreateAccountRequest;
 import com.atalaykaan.bankservicebackend.dto.request.update.UpdateAccountRequest;
-import com.atalaykaan.bankservicebackend.mapper.impl.AccountMapper;
 import com.atalaykaan.bankservicebackend.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -19,8 +18,6 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
-
-    private final AccountMapper accountMapper;
 
     @GetMapping("/accounts")
     public ResponseEntity<List<AccountDTO>> getAllAccounts() {

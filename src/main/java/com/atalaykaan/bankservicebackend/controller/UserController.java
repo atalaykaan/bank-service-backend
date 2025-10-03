@@ -3,7 +3,6 @@ package com.atalaykaan.bankservicebackend.controller;
 import com.atalaykaan.bankservicebackend.dto.response.UserDTO;
 import com.atalaykaan.bankservicebackend.dto.request.create.CreateUserRequest;
 import com.atalaykaan.bankservicebackend.dto.request.update.UpdateUserRequest;
-import com.atalaykaan.bankservicebackend.mapper.impl.UserMapper;
 import com.atalaykaan.bankservicebackend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -64,11 +63,15 @@ public class UserController {
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
+        userService.deleteUser(id);
+
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/users")
     public ResponseEntity<Void> deleteAllUsers() {
+
+        userService.deleteAllUsers();
 
         return ResponseEntity.noContent().build();
     }

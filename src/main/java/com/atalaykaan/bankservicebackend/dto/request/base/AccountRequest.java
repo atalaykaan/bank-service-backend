@@ -1,6 +1,7 @@
 package com.atalaykaan.bankservicebackend.dto.request.base;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -10,6 +11,7 @@ import lombok.*;
 @ToString
 public class AccountRequest {
 
-    @NotNull
-    private Long userId;
+    @NotBlank
+    @Email
+    private String email;
 }

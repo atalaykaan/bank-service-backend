@@ -1,7 +1,6 @@
 package com.atalaykaan.bankservicebackend.service;
 
 import com.atalaykaan.bankservicebackend.dto.response.AccountDTO;
-import com.atalaykaan.bankservicebackend.dto.response.UserDTO;
 import com.atalaykaan.bankservicebackend.dto.request.create.CreateAccountRequest;
 import com.atalaykaan.bankservicebackend.dto.request.update.UpdateAccountRequest;
 import com.atalaykaan.bankservicebackend.exception.AccountNotFoundException;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +55,9 @@ public class AccountService {
 
         Account account = Account.builder()
                 .user(foundUser)
+                .email(createAccountRequest.getEmail())
                 .createdAt(LocalDateTime.now())
+                .wallets(new ArrayList<>())
                 .build();
 
         userService.addAccountToUser(account, foundUser);
@@ -69,33 +71,10 @@ public class AccountService {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + id));
 
-        User user = userService.findUserById(updateAccountRequest.getUserId());
-
-        account.setUser(user);
-
-        userService.addAccountToUser(account, user);
+        account.setEmail(updateAccountRequest.getEmail());
 
         return accountMapper.toDTO(accountRepository.save(account));
     }
-
-//    @Transactional
-//    public Account addWalletToAccount(Long id, Wallet wallet) {
-//
-//        Account account = findAccountById(id);
-//
-//        Predicate<Wallet> checkIfWalletAlreadyExists = w -> w.getId().equals(wallet.getId());
-//
-//        if(account.getWallets()
-//                .stream()
-//                .anyMatch(checkIfWalletAlreadyExists)) {
-//
-//            throw new WalletAlreadyExistsException();
-//        }
-//
-//        account.getWallets().add(wallet);
-//
-//
-//    }
 
     @Transactional
     public void deleteAccount(Long id) {

@@ -1,6 +1,6 @@
 package com.atalaykaan.bankservicebackend.service;
 
-import com.atalaykaan.bankservicebackend.dto.response.AccountDTO;
+import com.atalaykaan.bankservicebackend.dto.request.update.WalletActionRequest;
 import com.atalaykaan.bankservicebackend.dto.response.WalletDTO;
 import com.atalaykaan.bankservicebackend.dto.request.create.CreateWalletRequest;
 import com.atalaykaan.bankservicebackend.dto.request.update.UpdateWalletRequest;
@@ -25,9 +25,9 @@ public class WalletService {
 
     private final WalletRepository walletRepository;
 
-    private final AccountService accountService;
-
     private final WalletMapper walletMapper;
+
+    private final AccountService accountService;
 
     public List<WalletDTO> findAllWallets() {
 
@@ -76,17 +76,13 @@ public class WalletService {
     public WalletDTO updateWallet(Long id, UpdateWalletRequest updateWalletRequest) {
 
         Wallet foundWallet = walletRepository
-                .findById(id)
-                .orElseThrow(() -> new WalletNotFoundException("Wallet not found with id: " + id));
+                .findById(id).orElseThrow(() -> new WalletNotFoundException("Wallet not found with id: " + id));
 
-        Account foundAccount = accountService.findAccountById(updateWalletRequest.getAccountId());
+        Account account = accountService.findAccountById(updateWalletRequest.getAccountId());
 
-        Predicate<Wallet> checkIfWalletWithCurrencyAlreadyExists =
-                Wallet -> Wallet.getCurrency().equals(updateWalletRequest.getCurrency());
-
-        foundAccount.getWallets()
+        account.getWallets()
                 .stream()
-                .filter(checkIfWalletWithCurrencyAlreadyExists)
+                .filter(wallet -> wallet.getCurrency().equals(updateWalletRequest.getCurrency()))
                 .findFirst()
                 .ifPresent((wallet) -> {
                     throw new WalletWithCurrencyAlreadyExistsException("Wallet with currency " + updateWalletRequest.getCurrency() + " already exists for account with id: " + updateWalletRequest.getAccountId());
@@ -94,36 +90,36 @@ public class WalletService {
 
         foundWallet.setBalance(updateWalletRequest.getBalance());
         foundWallet.setCurrency(updateWalletRequest.getCurrency());
-        foundWallet.setAccount(foundAccount);
+        foundWallet.setAccount(account);
 
-        return walletMapper.toDTO(foundWallet);
+        return walletMapper.toDTO(walletRepository.save(foundWallet));
     }
 
     @Transactional
-    public WalletDTO depositMoney(Long id, Double amount) {
+    public WalletDTO depositMoney(Long id, WalletActionRequest walletActionRequest) {
 
         Wallet wallet = walletRepository
                 .findById(id)
                 .orElseThrow(() -> new WalletNotFoundException("Wallet not found with id: " + id));
 
-        wallet.setBalance(wallet.getBalance() + amount);
+        wallet.setBalance(wallet.getBalance() + walletActionRequest.getAmount());
 
         return walletMapper.toDTO(walletRepository.save(wallet));
     }
 
     @Transactional
-    public WalletDTO withdrawMoney(Long id, Double amount) {
+    public WalletDTO withdrawMoney(Long id, WalletActionRequest walletActionRequest) {
 
         Wallet wallet = walletRepository
                 .findById(id)
                 .orElseThrow(() -> new WalletNotFoundException("Wallet not found with id: " + id));
 
-        if(wallet.getBalance() < amount) {
+        if(wallet.getBalance() < walletActionRequest.getAmount()) {
 
             throw new InsufficientFundsException("Withdraw amount cannot exceed the balance");
         }
 
-        wallet.setBalance(wallet.getBalance() - amount);
+        wallet.setBalance(wallet.getBalance() - walletActionRequest.getAmount());
 
         return walletMapper.toDTO(walletRepository.save(wallet));
     }

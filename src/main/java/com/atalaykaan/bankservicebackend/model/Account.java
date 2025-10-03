@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,13 +22,15 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String email;
+
     @OneToOne(mappedBy = "account")
     private User user;
 
     @OneToMany(mappedBy = "account",
             fetch = FetchType.EAGER,
             orphanRemoval = true)
-    private List<Wallet> wallets = new ArrayList<>();
+    private List<Wallet> wallets;
 
     private LocalDateTime createdAt;
 }

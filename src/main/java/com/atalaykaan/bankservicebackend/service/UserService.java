@@ -43,7 +43,6 @@ public class UserService {
 
         User user = User.builder()
                 .name(createUserRequest.getName())
-                .email(createUserRequest.getEmail())
                 .birthDate(createUserRequest.getBirthDate())
                 .build();
 
@@ -59,7 +58,6 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
 
         user.setName(updateUserRequest.getName());
-        user.setEmail(updateUserRequest.getEmail());
         user.setBirthDate(updateUserRequest.getBirthDate());
 
         User savedUser = userRepository.save(user);
@@ -68,11 +66,11 @@ public class UserService {
     }
 
     @Transactional
-    protected User addAccountToUser(Account account, User user) {
+    protected void addAccountToUser(Account account, User user) {
 
         user.setAccount(account);
 
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Transactional

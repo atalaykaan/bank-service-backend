@@ -17,6 +17,8 @@ public class AccountDTO {
 
     private Long id;
 
+    private String email;
+
     private Long userDtoId;
 
     private List<Long> walletIdList;

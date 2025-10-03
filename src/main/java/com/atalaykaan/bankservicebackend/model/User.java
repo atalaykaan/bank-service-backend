@@ -1,9 +1,6 @@
 package com.atalaykaan.bankservicebackend.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -24,15 +21,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 2, message = "Name must be at least 2 characters long")
-    @NotBlank
     private String name;
 
-    @Email
-    private String email;
-
     @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account")
     private Account account;
 
     private LocalDate birthDate;

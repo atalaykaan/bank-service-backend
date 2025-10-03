@@ -18,8 +18,6 @@ public class UserDTO {
 
     private String name;
 
-    private String email;
-
     private Long accountDtoId;
 
     private LocalDate birthDate;
