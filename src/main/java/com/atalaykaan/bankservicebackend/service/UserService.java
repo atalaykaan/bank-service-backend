@@ -46,9 +46,7 @@ public class UserService {
                 .birthDate(createUserRequest.getBirthDate())
                 .build();
 
-        userRepository.save(user);
-
-        return userMapper.toDTO(user);
+        return userMapper.toDTO(userRepository.save(user));
     }
 
     @Transactional
@@ -60,9 +58,7 @@ public class UserService {
         user.setName(updateUserRequest.getName());
         user.setBirthDate(updateUserRequest.getBirthDate());
 
-        User savedUser = userRepository.save(user);
-
-        return userMapper.toDTO(savedUser);
+        return userMapper.toDTO(userRepository.save(user));
     }
 
     @Transactional
