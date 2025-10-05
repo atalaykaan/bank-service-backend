@@ -3,6 +3,7 @@ package com.atalaykaan.bankservicebackend.service;
 import com.atalaykaan.bankservicebackend.dto.request.create.CreateUserRequest;
 import com.atalaykaan.bankservicebackend.dto.request.update.UpdateUserRequest;
 import com.atalaykaan.bankservicebackend.dto.response.UserDTO;
+import com.atalaykaan.bankservicebackend.exception.UserNotFoundException;
 import com.atalaykaan.bankservicebackend.mapper.impl.UserMapper;
 import com.atalaykaan.bankservicebackend.model.User;
 import com.atalaykaan.bankservicebackend.repository.UserRepository;
@@ -32,7 +33,7 @@ class UserServiceTest {
     private UserService userService;
 
     @Test
-    void whenCreatingSingleUser_returnBackUserDto() {
+    void whenCreatingSingleUser_thenReturnBackUserDto() {
 
         LocalDate birthDate = LocalDate.parse("13/04/1997", DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
@@ -66,7 +67,7 @@ class UserServiceTest {
     }
 
     @Test
-    void whenUpdatingUser_returnBackUserDto() {
+    void whenUpdatingUser_thenReturnBackUserDto() {
 
         LocalDate oldBirthDate = LocalDate.parse("13/04/1997", DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
@@ -102,6 +103,50 @@ class UserServiceTest {
         Mockito.when(userMapper.toDTO(updatedUser)).thenReturn(expectedUserDto);
 
         assertEquals(expectedUserDto, userService.updateUser(1L, updateUserRequest));
+    }
+
+    @Test
+    void whenDeletingUserWithInvalidId_thenThrowException() {
+
+        LocalDate birthDate = LocalDate.parse("30/05/2000", DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        CreateUserRequest createUserRequest = new CreateUserRequest();
+
+        createUserRequest.setName("John");
+
+        createUserRequest.setBirthDate(birthDate);
+
+        User user = User.builder()
+                .name(createUserRequest.getName())
+                .birthDate(createUserRequest.getBirthDate())
+                .build();
+
+        User resultUser = User.builder()
+                .id(1L)
+                .name(createUserRequest.getName())
+                .birthDate(createUserRequest.getBirthDate())
+                .build();
+
+        UserDTO expectedDto = UserDTO.builder()
+                .id(1L)
+                .name(createUserRequest.getName())
+                .birthDate(createUserRequest.getBirthDate())
+                .build();
+
+        Mockito.when(userRepository.save(user)).thenReturn(resultUser);
+
+        Mockito.when(userMapper.toDTO(resultUser)).thenReturn(expectedDto);
+
+        assertEquals(expectedDto, userService.createUser(createUserRequest));
+
+
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(resultUser));
+
+        assertEquals(resultUser, userService.findUserById(1L));
+
+        Mockito.when(userRepository.findById(2L)).thenThrow(UserNotFoundException.class);
+
+        assertThrows(UserNotFoundException.class, () -> userService.deleteUser(2L));
     }
 
 }
